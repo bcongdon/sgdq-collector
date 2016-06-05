@@ -1,3 +1,6 @@
+// Grabs Twitch / Donation data every minute
+// Pushes this data both to a MongoDB server and to Firebase
+
 "use strict"
 var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
