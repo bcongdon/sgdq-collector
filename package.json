@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "firebase": "^3.0.3",
+    "mongodb": "^2.1.21",
     "node-schedule": "^1.1.0",
     "scheduler": "^0.8.1",
     "scrape-it": "^3.1.1",

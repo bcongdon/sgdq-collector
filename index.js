@@ -3,6 +3,7 @@ var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
 var scheduler = require('node-schedule');
 var firebase = require('firebase');
+var MongoClient = require('mongodb').MongoClient;
 
 firebase.initializeApp({
   serviceAccount: "credentials.json",
@@ -49,9 +50,21 @@ exports.getCurrentDonations = function(cb) {
     });
 }
 
+//// Firebase
 var db = firebase.database();
+// Data maintained over time
 var data = db.ref("/data");
+// Data most current
 var stats = db.ref("/stats")
+
+//// MongoDB
+var url = 'mongodb://localhost:27017/sgdq2016'
+function insertDocument(data) {
+    MongoClient.connect(url, function(err, db) {
+        db.collection('data').insertOne(data);
+        db.close();
+    });
+}
 
 var time;
 
@@ -62,15 +75,23 @@ scheduler.scheduleJob(currSeconds + " * * * * *", function(){
     console.log("Running scheduled check at " + time.toString("yyyy-MM-dd HH:mm:ss"));
     exports.getTwitchViewers(function(viewers){
         data.child(time.getTime()).child('v').set(viewers);
-    });
-    exports.getCurrentDonations(function(obj){
-        data.child(time.getTime()).child('m').set(obj.total);
-        data.child(time.getTime()).child('d').set(obj.donators);
 
-        stats.child("total_donations").set(obj.total);
-        stats.child("num_donators").set(obj.donators);
-        stats.child("max_donation").set(obj.max);
-        stats.child("avg_donation").set(obj.avg);
+        exports.getCurrentDonations(function(obj){
+            data.child(time.getTime()).child('m').set(obj.total);
+            data.child(time.getTime()).child('d').set(obj.donators);
 
+            stats.child("total_donations").set(obj.total);
+            stats.child("num_donators").set(obj.donators);
+            stats.child("max_donation").set(obj.max);
+            stats.child("avg_donation").set(obj.avg);
+
+            insertDocument({
+                date:         time.getTime(),
+                donations:    obj.total,
+                avg_donation: obj.avg,
+                max_donation: obj.max,
+                donators:     obj.donators
+            })
+        });
     });
 });
