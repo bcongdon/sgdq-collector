@@ -1,0 +1,22 @@
+{
+  "name": "sgdq-collector",
+  "version": "1.0.0",
+  "description": "Collects Twitch / Donation information and pushes data to Firebase",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "author": "Benjamin Congdon",
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^3.0.3",
+    "node-schedule": "^1.1.0",
+    "scheduler": "^0.8.1",
+    "scrape-it": "^3.1.1",
+    "tmi.js": "0.0.29"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
