@@ -17,8 +17,11 @@
 		* `d` => Total num donators
 		* `v` => Number of Twitch viewrs
 * `games` => Holds collection of games
-	* `name` => Name of game
-	* `start` => Start of game in block (epoch time)
+	* `<epoch time>` => Start time of game
+		* `title` => Name of game
+		* `runner` => Name of speed runner
+		* `duration` => Planned duration of game's run
+		* `start_time` => Start time of game's run in epoch time (Redundant...)
 * `stats`
 	* `avg_donation` => Average donation ammount ($)
 	* `max_donation` => Largest donation ammount ($)
