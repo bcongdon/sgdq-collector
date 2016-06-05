@@ -21,7 +21,7 @@ exports.getTwitchViewers = function(cb) {
         url: "https://api.twitch.tv/kraken/streams/" + CHANNEL
     }, function(err, res, body) {
         body = JSON.parse(body);
-        if(body && 'stream' in body && "viewers" in body['stream']){
+        if(body && body['stream'] && "viewers" in body['stream']){
             cb(body['stream']['viewers'])
         }
     });
