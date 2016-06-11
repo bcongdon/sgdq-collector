@@ -2,7 +2,7 @@
   "name": "sgdq-collector",
   "version": "1.0.0",
   "description": "Collects Twitch / Donation information and pushes data to Firebase",
-  "main": "index.js",
+  "main": "sgdq-collector.js",
   "scripts": {
     "test": "mocha test.js"
   },
