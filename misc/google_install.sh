@@ -1,4 +1,4 @@
-# Designed to be run on a DigitalOcean Node.js droplet
+# Designed to be run on a Google Compute Engine instance
 apt-get install git mongodb-clients mongodb-server -y
 mkdir -p /data/db
 git clone https://github.com/bcongdon/sgdq-collector

@@ -6,7 +6,7 @@ var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
 var scheduler = require('node-schedule');
 var firebase = require('firebase');
-var MongoClient = require('mongodb').MongoClient;
+var time_utils = require('./utils/time_utils.js')
 
 firebase.initializeApp({
   serviceAccount: "credentials.json",
@@ -66,52 +66,30 @@ var stats = db.ref("/stats")
 // List of Games
 var games = db.ref("/games")
 
-//// MongoDB
-var url = 'mongodb://localhost:27017/sgdq2016'
-function insertDocument(data) {
-  MongoClient.connect(url, function(err, mdb) {
-    if(err) {
-      console.log(err);
-      return;
-    }
-    mdb.collection('data').insertOne(data);
-    mdb.close();
-  });
-}
-
 var time;
 
 // Run every 1 minute
 var currSeconds = new Date().getSeconds();
 scheduler.scheduleJob(currSeconds + " * * * * *", function(){
-  time = new Date();
-  console.log("Running scheduled check at " + time.toString("yyyy-MM-dd HH:mm:ss"));
+  var timeStamp = time_utils.getTimeStamp();
+  console.log("Running scheduled check at " + (new Date(timeStamp)).toString("yyyy-MM-dd HH:mm:ss"));
   // Update twitch viewer numbers
   exports.getTwitchViewers(function(viewers){
-    data.child(time.getTime()).child('v').set(viewers);
-    
-    // Update donation numbers
-    exports.getCurrentDonations(function(don_obj){
-      // Send data to firebase
-      data.child(time.getTime()).child('m').set(don_obj.total);
-      data.child(time.getTime()).child('d').set(don_obj.donators);
-      stats.child("total_donations").set(don_obj.total);
-      stats.child("num_donators").set(don_obj.donators);
-      stats.child("max_donation").set(don_obj.max);
-      stats.child("avg_donation").set(don_obj.avg);
-
-      // Insert data into MongoDB
-      insertDocument({
-        date:         time.getTime(),
-        viewers:      viewers,
-        donations:    don_obj.total,
-        avg_donation: don_obj.avg,
-        max_donation: don_obj.max,
-        donators:     don_obj.donators
-      })
-    });
+    data.child(timeStamp).child('v').set(viewers);
   });
 
+  // Update donation numbers
+  exports.getCurrentDonations(function(don_obj){
+    // Send data to firebase
+    data.child(timeStamp).child('m').set(don_obj.total);
+    data.child(timeStamp).child('d').set(don_obj.donators);
+    stats.child("total_donations").set(don_obj.total);
+    stats.child("num_donators").set(don_obj.donators);
+    stats.child("max_donation").set(don_obj.max);
+    stats.child("avg_donation").set(don_obj.avg);
+  });
+
+  // Update games played
   games.once('value', function(values){
     var dict = values.val();
     var games_played = 0;

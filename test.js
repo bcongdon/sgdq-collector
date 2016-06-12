@@ -1,9 +1,9 @@
 var assert = require('assert');
 var expect = require('chai').expect;
 
-var collector = require('./index.js');
+var collector = require('./sgdq_collector.js');
 
-describe('index.js', function(){
+describe('sgdq_collector.js', function(){
   describe("getCurrentDonations()", function() {
     it('should get 2014 data correctly', function(done){
       collector.DONATION_URL = "https://gamesdonequick.com/tracker/index/sgdq2014"
@@ -18,3 +18,13 @@ describe('index.js', function(){
     });
   });
 });
+
+var time = require("./utils/time_utils.js")
+
+describe('time_utils.js', function() {
+  describe("getTimeStamp()", function() {
+    it('should correctly drop current seconds', function() {
+      assert.equal(time.getTimeStamp(new Date(Date.parse("3:14:14 7-8-16"))), 1467972840000)
+    });
+  });
+})
