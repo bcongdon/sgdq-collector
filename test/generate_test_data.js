@@ -13,6 +13,7 @@ var data_ref = firebase.database().ref("data");
 
 var start = new Date("9:30:00 July 3, 2016")
 var end   = new Date("21:18:00 July 9, 2016")
+
 var payload = {}
 var i = 0, v = 10000;
 while(start < end) {
@@ -29,4 +30,4 @@ while(start < end) {
 
 data_ref.set(payload).then(function(){
     process.exit();
-})
+});
