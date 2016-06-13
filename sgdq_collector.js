@@ -5,13 +5,8 @@
 var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
 var scheduler = require('node-schedule');
-var firebase = require('firebase');
 var time_utils = require('./utils/time_utils.js')
-
-firebase.initializeApp({
-  serviceAccount: "credentials.json",
-  databaseURL: "https://sgdq-backend.firebaseio.com"
-});
+var firebase_utils = require('./utils/firebase_utils.js')
 
 var exports = module.exports;
 
@@ -58,7 +53,7 @@ exports.getCurrentDonations = function(cb) {
 }
 
 //// Firebase
-var db = firebase.database();
+var db = firebase_utils.database;
 // Data maintained over time
 var data = db.ref("/data");
 // Data most current

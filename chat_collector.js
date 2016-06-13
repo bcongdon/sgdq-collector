@@ -1,7 +1,7 @@
 var irc = require('tmi.js');
 var schedule = require('node-schedule');
-var gcloud = require('gcloud');
 var time_utils = require('./utils/time_utils.js')
+var gcloud = require('gcloud');
 var datastore = gcloud.datastore({
   projectId: 'sgdq-backend',
   keyFilename: 'credentials.json'
@@ -9,7 +9,7 @@ var datastore = gcloud.datastore({
 
 // Initialize IRC client
 var client = irc.client({
-  channels: ["#ESL_CSGO"],
+  channels: ["#MLG", "#IGN"],
   reconnect: true
 });
 client.connect();
@@ -19,15 +19,20 @@ client.on("chat", function (channel, user, message, self) {
   chats.push(message);
 });
 
-schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+function chatCollect() {
+  var timestamp = time_utils.getTimeStamp();
   datastore.save({
-    key: datastore.key("ChatLog"),
+    key: datastore.key(["ChatLog", timestamp]),
     data: {
       numMessages: chats.length,
       chats: chats,
-      timestamp: time_utils.getTimeStamp()
+      timestamp: (new Date(timestamp))
     }
   },function(err){if(err) throw err});
-  console.log("Chats at " + (new Date(time_utils.getTimeStamp())).toString() + ": " + chats.length)
+  console.log("Chats at " + (new Date(timestamp)).toString() + ": " + chats.length)
   chats = [];
+}
+
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+  chatCollect();
 });
