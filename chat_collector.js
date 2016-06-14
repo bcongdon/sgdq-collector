@@ -2,6 +2,7 @@ var irc = require('tmi.js');
 var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js')
 var gcloud = require('gcloud');
+var request = require('request')
 var datastore = gcloud.datastore({
   projectId: 'sgdq-backend',
   keyFilename: 'credentials.json'
@@ -9,30 +10,32 @@ var datastore = gcloud.datastore({
 
 // Initialize IRC client
 var client = irc.client({
-  channels: ["#MLG", "#IGN"],
+  channels: ["#MLG", "#IGN", "#Twitch"],
   reconnect: true
 });
 client.connect();
 
-var chats = [];
-client.on("chat", function (channel, user, message, self) {
-  chats.push(message);
+var emoteList = [];
+request('https://api.twitch.tv/kraken/chat/emoticon_images', (err, res, body)=>{
+  console.log("*Downloaded emote definitions")
+  emoteList = JSON.parse(body)['emoticons'].map(x=>{return x.code});
 });
 
+var chats = [];
+var numEmotes = 0;
+client.on("chat", function (channel, user, message, self) {
+  chats.push(message);
+  numEmotes += message.split(" ").filter(function(x){return emoteList.includes(x)}).length;
+});
+
+
 function chatCollect() {
-  var timestamp = time_utils.getTimeStamp();
-  datastore.save({
-    key: datastore.key(["ChatLog", timestamp]),
-    data: {
-      numMessages: chats.length,
-      chats: chats,
-      timestamp: (new Date(timestamp))
-    }
-  },function(err){if(err) throw err});
-  console.log("Chats at " + (new Date(timestamp)).toString() + ": " + chats.length)
+  console.log((new Date()).toString() + " - Chats: " + chats.length + " Emotes: " + numEmotes);
   chats = [];
+  numEmotes = 0;
 }
 
+console.log("*Chat collector started.")
 schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
   chatCollect();
 });
