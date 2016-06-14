@@ -3,11 +3,6 @@ var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js');
 var firebase_utils = require('./utils/firebase_utils.js');
 var request = require('request');
-var gcloud = require('gcloud');
-var datastore = gcloud.datastore({
-  projectId: 'sgdq-backend',
-  keyFilename: 'credentials.json'
-});
 
 // Initialize IRC client
 var client = irc.client({
@@ -33,7 +28,7 @@ var db = firebase_utils.database;
 var extras = db.ref("/extras");
 
 function chatCollect() {
-  timestamp = time_utils.getTimeStamp();
+  var timestamp = time_utils.getTimeStamp();
   console.log((new Date(timestamp)).toString() + " - Chats: " + chats.length + " Emotes: " + numEmotes);
   extras.child(timestamp).child('c').set(numEmotes);
   extras.child(timestamp).child('e').set(chats.length);
