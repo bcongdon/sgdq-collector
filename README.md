@@ -30,3 +30,8 @@ These scripts collect data for the data visualizations done in [SGDQ-Stats](http
 	* `max_donation` => Largest donation ammount ($)
 	* `num_donators` => Number of individual donations (not a perfect 1-to-1 map, but close enough)
 	* `total_donations` => Sum of all donations ($)
+* `extras` => Interesting, but less useful stats
+	* `<epoch time>` => Entry
+		* `c` => Number of Twitch chats sent
+		* `e` => Number of Twitch emotes sent
+		* `t` => Number of SGDQ-related Tweets sent

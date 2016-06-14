@@ -1,8 +1,9 @@
 var irc = require('tmi.js');
 var schedule = require('node-schedule');
-var time_utils = require('./utils/time_utils.js')
+var time_utils = require('./utils/time_utils.js');
+var firebase_utils = require('./utils/firebase_utils.js');
+var request = require('request');
 var gcloud = require('gcloud');
-var request = require('request')
 var datastore = gcloud.datastore({
   projectId: 'sgdq-backend',
   keyFilename: 'credentials.json'
@@ -28,9 +29,14 @@ client.on("chat", function (channel, user, message, self) {
   numEmotes += message.split(" ").filter(function(x){return emoteList.includes(x)}).length;
 });
 
+var db = firebase_utils.database;
+var extras = db.ref("/extras");
 
 function chatCollect() {
-  console.log((new Date()).toString() + " - Chats: " + chats.length + " Emotes: " + numEmotes);
+  timestamp = time_utils.getTimeStamp();
+  console.log((new Date(timestamp)).toString() + " - Chats: " + chats.length + " Emotes: " + numEmotes);
+  extras.child(timestamp).child('c').set(numEmotes);
+  extras.child(timestamp).child('e').set(chats.length);
   chats = [];
   numEmotes = 0;
 }
