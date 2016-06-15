@@ -6,9 +6,16 @@ var time_utils = require('./utils/time_utils.js');
 
 var client = new Twitter(t_creds);
 
+function likeTweet(tweet){
+  client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
+    if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
+  });
+}
+
 var num_tweets = 0;
-var stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016, pizza'});
+var stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016'});
 stream.on('data', function(tweet) {
+  likeTweet(tweet);
   num_tweets += 1;
 });
  

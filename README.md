@@ -27,9 +27,13 @@ These scripts collect data for the data visualizations done in [SGDQ-Stats](http
 		* `start_time` => Start time of game's run in epoch time (Redundant...)
 * `stats`
 	* `avg_donation` => Average donation amount ($)
+	* `games_played` => Number of games played so far in the marathon
 	* `max_donation` => Largest donation ammount ($)
 	* `num_donators` => Number of individual donations (not a perfect 1-to-1 map, but close enough)
+	* `total_chats` => Total number of chat messages sent in the Twitch Chat
 	* `total_donations` => Sum of all donations ($)
+	* `total_emotes` => Total number of emotes sent in the Twitch Chat
+	* `total_tweets` => Total number of Tweets sent related to SGDQ
 * `extras` => Interesting, but less useful stats
 	* `<epoch time>` => Entry
 		* `c` => Number of Twitch chats sent
