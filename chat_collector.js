@@ -25,13 +25,34 @@ client.on("chat", function (channel, user, message, self) {
 });
 
 var db = firebase_utils.database;
-var extras = db.ref("/extras");
+var extras = db.ref("extras");
+var stats = db.ref("stats");
+
+// Download initial totals
+var totalChats  = 0;
+var totalEmotes = 0;
+stats.once('value', function(data){
+  var stats = data.val();
+  totalChats = stats['total_chats'] || 0;
+  totalEmotes = stats['total_emotes'] || 0;
+  console.log("*Starting with - " + totalChats + " chats, " + totalEmotes + " emotes")
+});
 
 function chatCollect() {
   var timestamp = time_utils.getTimeStamp();
-  console.log((new Date(timestamp)).toString() + " - Chats: " + chats.length + " Emotes: " + numEmotes);
+  // Update totals
+  totalChats += chats.length;
+  totalEmotes += numEmotes;
+  console.log((new Date(timestamp)).toString() + " - Chats: " + chats.length + " (" + totalChats + ") Emotes: " + numEmotes
+    + " (" + totalEmotes + ")");
+
+  // Set extras data
   extras.child(timestamp).child('c').set(numEmotes);
   extras.child(timestamp).child('e').set(chats.length);
+  // Set stats data
+  stats.child("total_chats").set(totalChats);
+  stats.child("total_emotes").set(totalEmotes);
+  // Reset minutely counters
   chats = [];
   numEmotes = 0;
 }

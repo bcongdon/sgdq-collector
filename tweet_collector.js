@@ -18,12 +18,23 @@ stream.on('error', function(err) {
 });
 
 var db = firebase_utils.database;
-var extras = db.ref("/extras");
+var extras = db.ref("extras");
+var stats  = db.ref("stats");
+
+// Load initial total tweets
+var totalTweets = 0;
+db.ref("/stats/total_tweets").once('value', function(val){
+  totalTweets = parseInt(val.val()) || 0;
+  console.log("Total Tweets starting at: " + totalTweets);
+});
 
 function collectTweets(){
   var timestamp = time_utils.getTimeStamp();
   console.log((new Date(timestamp)).toString() + " - Tweets: " + num_tweets);
-  extras.child(timestamp).child("t").set(num_tweets)
+  extras.child(timestamp).child("t").set(num_tweets);
+  totalTweets += num_tweets;
+  stats.child("total_tweets").set(totalTweets);
+
   num_tweets = 0;
 }
 
