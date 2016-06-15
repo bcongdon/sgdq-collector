@@ -11,7 +11,7 @@ var firebase_utils = require('./utils/firebase_utils.js')
 var exports = module.exports;
 
 var client = irc.client();
-var CHANNEL = "Castro_1021"
+var CHANNEL = "Twitch"
 exports.DONATION_URL = "https://gamesdonequick.com/tracker/index/sgdq2015"
 
 exports.getTwitchViewers = function(cb) {
@@ -66,22 +66,23 @@ var time;
 // Run every 1 minute
 var currSeconds = new Date().getSeconds();
 scheduler.scheduleJob(currSeconds + " * * * * *", function(){
-  var timeStamp = time_utils.getTimeStamp();
-  console.log("Running scheduled check at " + (new Date(timeStamp)).toString("yyyy-MM-dd HH:mm:ss"));
+  var timestamp = time_utils.getTimeStamp();
   // Update twitch viewer numbers
   exports.getTwitchViewers(function(viewers){
-    data.child(timeStamp).child('v').set(viewers);
+    console.log((new Date(timestamp)).toString() + " - Viewers: " + viewers);
+    data.child(timestamp).child('v').set(viewers);
   });
 
   // Update donation numbers
   exports.getCurrentDonations(function(don_obj){
     // Send data to firebase
-    data.child(timeStamp).child('m').set(don_obj.total);
-    data.child(timeStamp).child('d').set(don_obj.donators);
+    data.child(timestamp).child('m').set(don_obj.total);
+    data.child(timestamp).child('d').set(don_obj.donators);
     stats.child("total_donations").set(don_obj.total);
     stats.child("num_donators").set(don_obj.donators);
     stats.child("max_donation").set(don_obj.max);
     stats.child("avg_donation").set(don_obj.avg);
+    console.log((new Date(timestamp)).toString() + " - Donations: " + don_obj.total + " Donators: " + don_obj.donators);
   });
 
   // Update games played
@@ -91,6 +92,7 @@ scheduler.scheduleJob(currSeconds + " * * * * *", function(){
     for(var key in dict){
       if (dict[key].start_time < (new Date()).getTime()){
         games_played += 1;
+        console.log((new Date(timestamp)).toString() + " - Games played increased: " + games_played);
       }
     }
     stats.child("games_played").set(games_played);

@@ -25,7 +25,7 @@ var stats  = db.ref("stats");
 var totalTweets = 0;
 db.ref("/stats/total_tweets").once('value', function(val){
   totalTweets = parseInt(val.val()) || 0;
-  console.log("Total Tweets starting at: " + totalTweets);
+  console.log("*Total Tweets starting at: " + totalTweets);
 });
 
 function collectTweets(){
