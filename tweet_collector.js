@@ -30,8 +30,16 @@ var stats  = db.ref("stats");
 
 // Load initial total tweets
 var totalTweets = 0;
-db.ref("/stats/total_tweets").once('value', function(val){
-  totalTweets = parseInt(val.val()) || 0;
+db.ref("/extras").once('value', function(val){
+  var extrasList = val.val();
+  if(extrasList){
+    for(var i in extrasList){
+      totalTweets += extrasList[i]['t'] || 0;
+    }
+  }
+  else{
+    totalTweets = 0;
+  }
   console.log("*Total Tweets starting at: " + totalTweets);
 });
 
