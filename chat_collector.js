@@ -31,10 +31,18 @@ var stats = db.ref("stats");
 // Download initial totals
 var totalChats  = 0;
 var totalEmotes = 0;
-stats.once('value', function(data){
-  var stats = data.val();
-  totalChats = stats['total_chats'] || 0;
-  totalEmotes = stats['total_emotes'] || 0;
+extras.once('value', function(data){
+  var extrasList = data.val();
+  if(extrasList){
+    for(var i in extrasList){
+      totalChats  += extrasList[i]['c'] || 0;
+      totalEmotes += extrasList[i]['e'] || 0;
+    }
+  }
+  else{
+    totalChats = 0;
+    totalEmotes = 0;
+  }
   console.log("*Starting with - " + totalChats + " chats, " + totalEmotes + " emotes")
 });
 

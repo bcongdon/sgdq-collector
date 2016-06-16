@@ -65,6 +65,7 @@ var time;
 
 // Run every 1 minute
 var currSeconds = new Date().getSeconds();
+console.log("*SGDQ Collector started")
 scheduler.scheduleJob(currSeconds + " * * * * *", function(){
   var timestamp = time_utils.getTimeStamp();
   // Update twitch viewer numbers
