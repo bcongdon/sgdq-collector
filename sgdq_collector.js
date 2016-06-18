@@ -5,18 +5,18 @@
 var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
 var scheduler = require('node-schedule');
-var time_utils = require('./utils/time_utils.js')
-var firebase_utils = require('./utils/firebase_utils.js')
+var time_utils = require('./utils/time_utils.js');
+var firebase_utils = require('./utils/firebase_utils.js');
+var channel = require('./utils/channel.js')
 
 var exports = module.exports;
 
 var client = irc.client();
-var CHANNEL = "Twitch"
-exports.DONATION_URL = "https://gamesdonequick.com/tracker/index/sgdq2015"
+exports.DONATION_URL = "https://gamesdonequick.com/tracker/index/sgdq2016"
 
 exports.getTwitchViewers = function(cb) {
   client.api({
-    url: "https://api.twitch.tv/kraken/streams/" + CHANNEL
+    url: "https://api.twitch.tv/kraken/streams/" + channel.channel().slice(1)
   }, function(err, res, body) {
     body = JSON.parse(body);
     if(body && body['stream'] && "viewers" in body['stream']){

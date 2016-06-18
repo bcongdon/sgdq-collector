@@ -9,6 +9,7 @@
   "author": "Benjamin Congdon",
   "license": "MIT",
   "dependencies": {
+    "array-includes": "^3.0.2",
     "firebase": "^3.0.3",
     "forever": "^0.15.2",
     "gcloud": "^0.36.0",

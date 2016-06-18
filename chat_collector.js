@@ -3,10 +3,12 @@ var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js');
 var firebase_utils = require('./utils/firebase_utils.js');
 var request = require('request');
+var channel = require('./utils/channel.js');
+var includes = require('array-includes');
 
 // Initialize IRC client
 var client = irc.client({
-  channels: ["#MLG", "#IGN", "#Twitch"],
+  channels: [channel.channel()],
   reconnect: true
 });
 client.connect();
@@ -21,7 +23,7 @@ var chats = [];
 var numEmotes = 0;
 client.on("chat", function (channel, user, message, self) {
   chats.push(message);
-  numEmotes += message.split(" ").filter(function(x){return emoteList.includes(x)}).length;
+  numEmotes += message.split(" ").filter(function(x){return includes(emoteList, x)}).length;
 });
 
 var db = firebase_utils.database;
@@ -63,6 +65,14 @@ function chatCollect() {
   // Reset minutely counters
   chats = [];
   numEmotes = 0;
+
+  if(!includes(client.getChannels(), channel.channel())) {
+    client = irc.client({
+      channels: [channel.channel()],
+      reconnect: true
+    });
+    client.connect();
+  }
 }
 
 console.log("*Chat collector started.")
