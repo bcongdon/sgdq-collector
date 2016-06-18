@@ -6,6 +6,7 @@ firebase.initializeApp({
   serviceAccount: "credentials.json",
   databaseURL: "https://sgdq-backend.firebaseio.com"
 });
+var moment = require('moment')
 
 var db = firebase.database();
 var games_ref = db.ref("/games");
@@ -16,10 +17,12 @@ var payload = {}
 games.forEach(function(item){
     payload = {
         runner: item.runner,
-        start_time: (new Date(item.start_time)).getTime(),
+        // start_time: (new Date(item.start_time)).getTime(),
+        start_time: moment(item.start_time).subtract(15, 'days').valueOf(),
         duration: item.duration,
         title: item.title
     }
+    // console.log(payload.start_time)
     console.log("Sending '" + item.title + "'");
     games_ref.child(payload.start_time).set(payload, function(err){
         if(err) console.log(err);

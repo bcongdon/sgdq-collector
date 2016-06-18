@@ -4,7 +4,7 @@
 "use strict"
 var irc = require('tmi.js');
 const scrapeIt = require("scrape-it");
-var scheduler = require('node-schedule');
+var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js');
 var firebase_utils = require('./utils/firebase_utils.js');
 var channel = require('./utils/channel.js')
@@ -66,7 +66,7 @@ var time;
 // Run every 1 minute
 var currSeconds = new Date().getSeconds();
 console.log("*SGDQ Collector started")
-scheduler.scheduleJob(currSeconds + " * * * * *", function(){
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
   var timestamp = time_utils.getTimeStamp();
   // Update twitch viewer numbers
   exports.getTwitchViewers(function(viewers){
@@ -93,8 +93,8 @@ scheduler.scheduleJob(currSeconds + " * * * * *", function(){
     for(var key in dict){
       if (dict[key].start_time < (new Date()).getTime()){
         games_played += 1;
-        console.log((new Date(timestamp)).toString() + " - Games played increased: " + games_played);
       }
+      console.log((new Date(timestamp)).toString() + " - Games played: " + games_played);
     }
     stats.child("games_played").set(games_played);
   });

@@ -57,8 +57,8 @@ function chatCollect() {
     + " (" + totalEmotes + ")");
 
   // Set extras data
-  extras.child(timestamp).child('c').set(numEmotes);
-  extras.child(timestamp).child('e').set(chats.length);
+  extras.child(timestamp).child('e').set(numEmotes);
+  extras.child(timestamp).child('c').set(chats.length);
   // Set stats data
   stats.child("total_chats").set(totalChats);
   stats.child("total_emotes").set(totalEmotes);
