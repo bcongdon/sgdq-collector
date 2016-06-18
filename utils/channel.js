@@ -3,7 +3,7 @@ var client = irc.client();
 
 var exports = module.exports;
 
-var channel = "#ESL_DOTA2";
+var channel = "ESL_DOTA2";
 
 exports.channel = function(){
   getChannel();

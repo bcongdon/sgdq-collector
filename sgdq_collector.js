@@ -16,7 +16,7 @@ exports.DONATION_URL = "https://gamesdonequick.com/tracker/index/sgdq2016"
 
 exports.getTwitchViewers = function(cb) {
   client.api({
-    url: "https://api.twitch.tv/kraken/streams/" + channel.channel().slice(1)
+    url: "https://api.twitch.tv/kraken/streams/" + channel.channel()
   }, function(err, res, body) {
     body = JSON.parse(body);
     if(body && body['stream'] && "viewers" in body['stream']){
