@@ -12,9 +12,9 @@ exports.channel = function(){
 
 function getChannel(cb) {
   client.api({
-      url: "https://api.twitch.tv/kraken/streams/featured",
+      url: "https://api.twitch.tv/kraken/streams",
   }, function(err, res, body) {
-      channel = JSON.parse(body)['featured'][0]['stream']['channel']['display_name'];
+      channel = JSON.parse(body).streams[0].channel.display_name;
       if(cb) cb(channel);
   });
 }
