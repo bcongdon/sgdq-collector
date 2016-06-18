@@ -10,11 +10,13 @@ firebase.initializeApp({
   databaseURL: "https://sgdq-backend.firebaseio.com"
 });
 var data_ref = firebase.database().ref("data");
+var extras_ref = firebase.database().ref("extras");
 
 var start = new Date("9:30:00 July 3, 2016")
 var end   = new Date("21:18:00 July 9, 2016")
 
 var payload = {}
+var extrasPayload = {}
 var i = 0, v = 10000;
 while(start < end) {
     start.setMinutes(start.getMinutes() + 1)
@@ -26,8 +28,17 @@ while(start < end) {
         d: 2,
         v: v,
     }
+    extrasPayload[start.getTime()] = {
+        t: randomIntInc(120, 460),
+        e: randomIntInc(150, 1550),
+        c: randomIntInc(250, 1250)
+    }
 }
 
 data_ref.set(payload).then(function(){
-    process.exit();
+    console.log("Data payload done.");
+    extras_ref.set(extrasPayload).then(function() {
+        console.log("Extras payload done.");
+        process.exit();
+    });
 });
