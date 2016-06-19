@@ -66,12 +66,10 @@ function chatCollect() {
   chats = [];
   numEmotes = 0;
 
-  if(!includes(client.getChannels(), channel.channel())) {
-    client = irc.client({
-      channels: [channel.channel()],
-      reconnect: true
-    });
-    client.connect();
+  var chan = channel.channel()
+  if(!includes(client.getChannels(), chan)) {
+    client.part(client.getChannels()[0])
+    client.join(chan);
   }
 }
 
