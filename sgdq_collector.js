@@ -94,8 +94,8 @@ schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
       if (dict[key].start_time < (new Date()).getTime()){
         games_played += 1;
       }
-      console.log((new Date(timestamp)).toString() + " - Games played: " + games_played);
     }
+    console.log((new Date(timestamp)).toString() + " - Games played: " + games_played);
     stats.child("games_played").set(games_played);
   });
 });

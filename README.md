@@ -4,11 +4,17 @@
 
 ## Tools
 * NodeJS
-    * node-scheduler for scheduling
-    * scrape-it for scraping donation page
-    * tmi.js for Twitch.tv data
+    * [node-scheduler](https://www.npmjs.com/package/node-schedule) for scheduling
+    * [scrape-it](https://github.com/IonicaBizau/scrape-it) for scraping donation page
+    * [tmi.js](tmijs.org) for Twitch.tv data
+    * [forever](https://github.com/foreverjs/forever) for managing all the scripts and restarting them if anything crashes.
 * Firebase for backend storage
-* MongoDB for local backup (and more data storage for later use)
+* Google Compute Engine as the hardware running the scripts
+
+## Data Sources
+* All Twitch data is acquired with [tmi.js](https://www.tmijs.org/). Viewership data is gained by polling the API every minute. The collector listens in on the chat and reports messages per minute, as well as emote data (by referencing the Twitch global emote list).
+* Twitter data is collected by listening to a Twitter stream with the terms 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016'.
+* Donations / Donator data is scraped from the [SGDQ Donation Tracker](https://gamesdonequick.com/tracker/index/sgdq2016).
 
 ## Frontend
 These scripts collect data for the data visualizations done in [SGDQ-Stats](https://github.com/bcongdon/sgdq-stats).
