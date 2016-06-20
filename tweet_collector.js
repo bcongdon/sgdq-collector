@@ -14,16 +14,24 @@ function likeTweet(tweet){
 }
 
 var num_tweets = 0;
-var stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016, pizza'});
-stream.on('data', function(tweet) {
-  likeTweet(tweet);
-  num_tweets += 1;
-});
- 
-stream.on('error', function(err) {
-  console.log("ERROR: " + err);
-  throw err;
-});
+
+var stream;
+function setupStream(){
+  if(stream) {
+    console.log("*Restarting twitter stream.")
+    stream.destroy()
+  }
+  stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016, pizza'});
+  stream.on('data', function(tweet) {
+    likeTweet(tweet);
+    num_tweets += 1;
+  });
+   
+  stream.on('error', function(err) {
+    console.log("ERROR: " + err);
+    throw err;
+  });
+}
 
 var db = firebase_utils.database;
 var extras = db.ref("extras");
@@ -54,7 +62,13 @@ function collectTweets(){
   num_tweets = 0;
 }
 
+setupStream();
 console.log("*Tweet collector started.")
 schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
   collectTweets();
+});
+
+// Restart twitter stream every hour
+schedule.scheduleJob({minute: 0}, function() {
+  setupStream();
 });

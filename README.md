@@ -13,7 +13,7 @@
 
 ## Data Sources
 * All Twitch data is acquired with [tmi.js](https://www.tmijs.org/). Viewership data is gained by polling the API every minute. The collector listens in on the chat and reports messages per minute, as well as emote data (by referencing the Twitch global emote list).
-* Twitter data is collected by listening to a Twitter stream with the terms 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016'.
+* Twitter data is collected by listening to a Twitter stream with the terms `sgdq`, `summergamesdonequick`, `sgdq2016`, `#sgdq2016`.
 * Donations / Donator data is scraped from the [SGDQ Donation Tracker](https://gamesdonequick.com/tracker/index/sgdq2016).
 
 ## Frontend
