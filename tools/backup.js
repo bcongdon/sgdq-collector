@@ -20,7 +20,7 @@ mkdirp(backup_directory, function(err) {
 });
 
 function doBackup(cb) {
-  ref.once("value", function(data){
+  ref.orderByKey().once("value", function(data){
     var timestamp = dateutils.getTimeStamp();
     fs.writeFile(backup_directory + (new Date(timestamp)).toString() + '.json', JSON.stringify(data.val()), function(err) {
       if(err) console.log(err);
@@ -40,9 +40,29 @@ function doBackup(cb) {
 }
 
 function healthCheck(data_in){
-  var data = data_in.data;
-  var extras = data_in.extras;
-  var entry, zeros = {};
+  var data = [],
+      extras = [],
+      zeros = {'donators': 0,
+               'donations': 0,
+               'viewers': 0,
+               'tweets': 0,
+               'emotes': 0,
+               'chats': 0};
+  for(var key in data_in.data)   data.push(data_in.data[key]);
+  for(var key in data_in.extras) extras.push(data_in.extras[key]);
+  data = data.reverse();
+  extras = extras.reverse()
+  for(var i = 0; i < 5 && i < data.length && i < extras.length; i++){
+    if(data[i].d <= 0) zeros['donators'] += 1;
+    if(data[i].m <= 0) zeros['donations'] += 1;
+    if(data[i].v <= 0) zeros['viewers'] += 1;
+    if(extras[i].t <= 0) zeros['tweets'] += 1;
+    if(extras[i].e <= 0) zeros['emotes'] += 1;
+    if(extras[i].c <= 0) zeros['chats'] += 1;
+  }
+  var alarms = []
+  for(var key in zeros) if(zeros[key] >= 3) alarms.push("No data from " + key + " in " + zeros[key] + " minutes!")
+  console.log(alarms);
 }
 
 // console.log("*Backup started.")
