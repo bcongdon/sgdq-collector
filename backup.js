@@ -10,6 +10,11 @@ var ref = firebase.database().ref();
 var fs = require('fs');
 var dateutils = require('./utils/time_utils.js');
 var path = require('path');
+var twilioCreds = require('./twilio_creds.json');
+var twilio = require('twilio');
+var client = new twilio.RestClient(twilioCreds.accountSid, twilioCreds.authToken);
+var includes = require('array-includes');
+
 
 var backup_directory = "~/sgdq-backup/"
 
@@ -61,8 +66,29 @@ function healthCheck(data_in){
     if(extras[i].c <= 0) zeros['chats'] += 1;
   }
   var alarms = []
-  for(var key in zeros) if(zeros[key] >= 3) alarms.push("No data from " + key + " in " + zeros[key] + " minutes!")
-  console.log(alarms);
+  for(var key in zeros) if(zeros[key] >= 3) alarms.push([key, "No data from *" + key + "* in " + zeros[key] + " minutes!"]);
+  if(alarms.length > 0) sendAlarms(alarms);
+}
+
+var triggered = []
+
+function sendAlarms(alarms) {
+  alarms = alarms.filter(function(d) { return !includes(triggered, d[0]) });
+  var message = alarms.map(function(d) { return d[1]; }).join("\n");
+  client.messages.create({
+      body: message,
+      to: twilioCreds.alertNumber,
+      from: twilioCreds.twilioNumber
+  }, function(err, message) {
+      if(err) {
+        console.log(err);
+        return;
+      }
+      alarms.forEach(function(d) { 
+        console.log("Alarm triggered on: " + d[0]);
+        triggered.push(d[0]);
+      });
+  });
 }
 
 // console.log("*Backup started.")
