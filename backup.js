@@ -1,6 +1,6 @@
 var firebase = require('firebase');
 firebase.initializeApp({
-  serviceAccount: "../credentials.json",
+  serviceAccount: "credentials.json",
   databaseURL: "https://sgdq-backend.firebaseio.com"
 });
 var schedule = require('node-schedule');
@@ -8,7 +8,7 @@ var mkdirp = require('mkdirp');
 var expandHomeDir = require('expand-home-dir');
 var ref = firebase.database().ref();
 var fs = require('fs');
-var dateutils = require('../utils/time_utils.js');
+var dateutils = require('./utils/time_utils.js');
 var path = require('path');
 
 var backup_directory = "~/sgdq-backup/"
