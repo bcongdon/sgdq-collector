@@ -7,7 +7,6 @@ var includes = require('array-includes');
 var exports = module.exports;
 
 exports.check = function(data_in){
-  console.log("hello")
   var data = [],
       extras = [],
       zeros = {'donators': 0,
