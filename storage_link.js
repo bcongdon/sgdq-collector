@@ -15,25 +15,32 @@ var gcloud = require('gcloud')({
 var bucket = gcloud.storage().bucket('sgdq-backend.appspot.com');
 
 function doUpload(cb) {
+  // Download entire firebase database
   ref.once("value", function(data){
     data = data.val();
+
     var timestamp = dateutils.getTimeStamp();
     var timestamp_str = (new Date(timestamp)).toString();
     var file = bucket.file(timestamp_str + '.json');
     var latest = bucket.file('latest.json');
+    
     var options = { 
       metadata: { contentType: 'application/json'},
+      // Should be public
       public: true
     };
 
+    // Save new file to bucket
     file.save(JSON.stringify(data), options, function(err){
       if(err) console.log(err);
       else{
         console.log("[Storage Link] Upload successful.")
+        // Delete old 'latest.json'
         latest.delete(function(err){
           if(err) console.log(err);
           else{
             console.log("[Storage Link] Deletion successful.")
+            // Copy new upload to 'latest.json'
             file.copy('latest.json', function(err){
               if(err) console.log(err);
               else console.log("[Storage Link] Copy successful.")
@@ -47,9 +54,11 @@ function doUpload(cb) {
   });
 }
 
-// console.log("*Backup started.")
-// schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+console.log("*[Storage Link] Started.")
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
   var timestamp = dateutils.getTimeStamp();
   console.log((new Date(timestamp)).toString() + " - Creating backup");
+
+  // Do file upload and then pipe data to health check
   doUpload(health_check.check);
-// }
+}
