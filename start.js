@@ -12,9 +12,14 @@ var tweet_collector = new (forever.Monitor)('tweet_collector.js',{
   'outFile': './tweet-collector.log',
   'errFile': './tweet-err.log'
 });
+var storage_link = new (forever.Monitor)('storage_link.js',{
+  'outFile': './storage-link.log',
+  'errFile': './storage-err.log'
+});
 
 sgdq_collector.start();
 chat_collector.start();
 tweet_collector.start();
+storage_link.start();
 
-forever.startServer(sgdq_collector, chat_collector, tweet_collector);
+forever.startServer(sgdq_collector, chat_collector, tweet_collector, storage_link);

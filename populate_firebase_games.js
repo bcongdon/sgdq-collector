@@ -17,8 +17,8 @@ var payload = {}
 games.forEach(function(item){
     payload = {
         runner: item.runner,
-        // start_time: (new Date(item.start_time)).getTime(),
-        start_time: moment(item.start_time).subtract(15, 'days').valueOf(),
+        start_time: (new Date(item.start_time)).getTime(),
+        // start_time: moment(item.start_time).subtract(15, 'days').valueOf(),
         duration: item.duration,
         title: item.title
     }

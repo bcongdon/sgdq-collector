@@ -1,3 +1,4 @@
+"use strict"
 var irc = require('tmi.js');
 var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js');
