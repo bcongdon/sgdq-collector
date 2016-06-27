@@ -29,12 +29,12 @@ exports.check = function(data_in){
   }
   var alarms = []
   for(var key in zeros) if(zeros[key] >= 3) alarms.push([key, "No data from *" + key + "* in " + zeros[key] + " minutes!"]);
-  if(alarms.length > 0) sendAlarms(alarms);
+  if(alarms.length > 0) exports.sendAlarms(alarms);
 }
 
 var triggered = []
 
-function sendAlarms(alarms) {
+exports.sendAlarms = function(alarms) {
   alarms = alarms.filter(function(d) { return !includes(triggered, d[0]) });
   var message = alarms.map(function(d) { return d[1]; }).join("\n");
   client.messages.create({
