@@ -3,8 +3,8 @@ var twilio = require('twilio');
 var client = new twilio.RestClient(twilioCreds.accountSid, twilioCreds.authToken);
 var includes = require('array-includes');
 
-
 var exports = module.exports;
+var start_time = (new Date()).getTime();
 
 exports.check = function(data_in){
   var data = [],
@@ -15,8 +15,8 @@ exports.check = function(data_in){
                'tweets': 0,
                'emotes': 0,
                'chats': 0};
-  for(var key in data_in.data)   data.push(data_in.data[key]);
-  for(var key in data_in.extras) extras.push(data_in.extras[key]);
+  for(var key in data_in.data)   if(key > start_time) data.push(data_in.data[key]);
+  for(var key in data_in.extras) if(key > start_time) extras.push(data_in.extras[key]);
   data = data.reverse();
   extras = extras.reverse()
   for(var i = 0; i < 5 && i < data.length && i < extras.length; i++){
