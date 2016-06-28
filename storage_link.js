@@ -38,9 +38,12 @@ function doUpload(data) {
         else{
           console.log("[Storage Link] Deletion successful.")
           // Copy new upload to 'latest.json'
-          file.copy('latest.json', function(err){
+          file.copy('latest.json', function(err, copiedFile){
             if(err) console.log(err);
-            else console.log("[Storage Link] Copy successful.")
+            else {
+              copiedFile.makePublic();
+              console.log("[Storage Link] Copy successful.")
+            }
           });
         }
       });

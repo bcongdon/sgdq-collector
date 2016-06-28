@@ -19,6 +19,7 @@
     "mongodb": "^2.1.21",
     "node-schedule": "^1.1.0",
     "prompt": "^1.0.0",
+    "request": "^2.72.0",
     "scheduler": "^0.8.1",
     "scrape-it": "^3.1.1",
     "tmi.js": "0.0.29",
