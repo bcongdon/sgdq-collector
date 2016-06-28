@@ -14,6 +14,7 @@ function likeTweet(tweet){
 }
 
 var num_tweets = 0;
+var zero_minutes = 0;
 
 var stream;
 function setupStream(){
@@ -23,7 +24,7 @@ function setupStream(){
   }
   stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016, pizza'});
   stream.on('data', function(tweet) {
-    likeTweet(tweet);
+    // likeTweet(tweet);
     num_tweets += 1;
   });
    
@@ -59,6 +60,8 @@ function collectTweets(){
   totalTweets += num_tweets;
   stats.child("total_tweets").set(totalTweets);
 
+  if(num_tweets == 0) zero_minutes += 1;
+  if(zero_minutes > 5) setupStream();
   num_tweets = 0;
 }
 
