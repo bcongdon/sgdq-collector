@@ -36,6 +36,7 @@ var triggered = []
 
 exports.sendAlarms = function(alarms) {
   alarms = alarms.filter(function(d) { return !includes(triggered, d[0]) });
+  if(alarms.length == 0) return;
   var message = alarms.map(function(d) { return d[1]; }).join("\n");
   client.messages.create({
       body: message,
