@@ -2,6 +2,7 @@ var twilioCreds = require('./twilio_creds.json');
 var twilio = require('twilio');
 var client = new twilio.RestClient(twilioCreds.accountSid, twilioCreds.authToken);
 var includes = require('array-includes');
+var schedule = require('node-schedule');
 
 var exports = module.exports;
 var start_time = (new Date()).getTime();
@@ -53,3 +54,8 @@ exports.sendAlarms = function(alarms) {
       });
   });
 }
+
+// Reset triggered alarms every 15 minutes
+schedule.scheduleJob({minute: [0, 15, 30, 45]}, function() {
+  triggered = [];
+});
