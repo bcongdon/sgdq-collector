@@ -36,7 +36,7 @@ exports.check = function(data_in){
 var triggered = []
 
 exports.sendAlarms = function(alarms) {
-  if(triggered.length > 0 ) console.log("Alarms already triggered: " triggered.join(' '));
+  if(triggered.length > 0 ) console.log("Alarms already triggered: " + triggered.join(' '));
   alarms = alarms.filter(function(d) { return !includes(triggered, d[0]) });
   if(alarms.length == 0) return;
   var message = alarms.map(function(d) { return d[1]; }).join("\n");
