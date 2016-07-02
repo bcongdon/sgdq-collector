@@ -3,10 +3,10 @@ var client = irc.client();
 
 var exports = module.exports;
 
-var channel = "NALCS1";
+var channel = "gamesdonequick";
 
 exports.channel = function(){
-  getChannel();
+  // getChannel();
   return channel;
 }
 
