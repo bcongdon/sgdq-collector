@@ -20,7 +20,7 @@ function getChannel(cb) {
   });
 }
 
-getChannel();
+// getChannel();
 
 if (require.main === module) {
   getChannel(function(e){

@@ -22,7 +22,7 @@ function setupStream(){
     console.log("*Restarting twitter stream.")
     stream.destroy()
   }
-  stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016, pizza'});
+  stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016'});
   stream.on('data', function(tweet) {
     likeTweet(tweet);
     num_tweets += 1;

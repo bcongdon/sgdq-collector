@@ -44,6 +44,10 @@ function doUpload(data) {
               copiedFile.makePublic();
               console.log("[Storage Link] Copy successful.")
             }
+            // Only keep every 10th backup to prevent insanity
+            if((new Date(timestamp)).getMinutes() % 10 != 0) {
+              file.delete(function(err) { console.log(err); });
+            }
           });
         }
       });
