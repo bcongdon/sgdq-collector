@@ -10,6 +10,7 @@
     * [forever](https://github.com/foreverjs/forever) for managing all the scripts and restarting them if anything crashes.
 * Firebase for backend storage
 * Google Compute Engine as the hardware running the scripts
+* Google Cloud Storage as the cache location for the JSON dataset
 
 ## Data Sources
 * All Twitch data is acquired with [tmi.js](https://www.tmijs.org/). Viewership data is gained by polling the API every minute. The collector listens in on the chat and reports messages per minute, as well as emote data (by referencing the Twitch global emote list).
