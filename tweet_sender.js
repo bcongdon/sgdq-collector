@@ -1,11 +1,15 @@
+"use strict";
 var Twitter = require('twitter');
 var t_creds = require("./twitter_credentials.json");
 var client = new Twitter(t_creds);
 var firebase_utils = require('./utils/firebase_utils.js');
 var merge = require('merge');
-var shuffle = require('shuffle-array')
+var shuffle = require('shuffle-array');
+var schedule = require('node-schedule');
+var time_utils = require('./utils/time_utils.js');
 
 var db = firebase_utils.database;
+var client = new Twitter(t_creds);
 
 function viewerSummary(cb) {
   getData(function(data){
@@ -81,9 +85,34 @@ function getData(cb){
   });
 }
 
-[viewerSummary, donatorSummary, donationSummary, tweetSummary, chatSummary].map(function(d) { d(console.log)});
-// viewerSummary(console.log);
-// donatorSummary(console.log);
-// donationSummary(console.log);
-// tweetSummary(console.log);
-// chatSummary(console.log);
+function sendTweet(status) {
+  client.post('statuses/update', {status: status}, function(error, tweet, response) {
+    if (error) { console.log(error); }
+    else { console.log("[Tweet Sender] Sent tweet: '" + status + "'")}
+  });
+}
+
+var timeFuncMap = [ 
+  { func: viewerSummary, minute: 5, hour: 1 },
+  { func: donatorSummary, minute: 12, hour: 2 },
+  { func: donationSummary, minute: 24, hour: 1 },
+  { func: tweetSummary, minute: 36, hour: 1 },
+  { func: chatSummary, minute: 48, hour: 2 },
+]
+
+function onSchedule() {
+  var minute = (new Date(time_utils.getTimeStamp())).getMinutes(), 
+      hour = (new Date(time_utils.getTimeStamp())).getHours()
+  timeFuncMap.forEach(function(d) {
+    if(minute == d.minute && hour % d.hour == 0){
+      d.func(sendTweet)
+    }
+  });
+}
+
+onSchedule();
+
+console.log("*[Tweet Sender] Started.")
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+  onSchedule();
+});
