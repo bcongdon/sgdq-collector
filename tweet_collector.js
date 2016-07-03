@@ -20,7 +20,7 @@ function interactWith(tweet){
 function like(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
-    if(err) rateLimit = true;
+    if(err) { rateLimit = true; console.log("[Tweet Sender] Imposing rate limit"); }
     if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
     // else { console.log(err); }
   });
@@ -29,7 +29,7 @@ function like(tweet) {
 function follow(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('friendships/create', {user_id: tweet.user.id}, (err, data, res)=>{
-    if(err) rateLimit = true;
+    if(err) { rateLimit = true; console.log("[Tweet Sender] Imposing rate limit"); }
     if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
     // else { console.log(err); }
   });
