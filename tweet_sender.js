@@ -62,8 +62,9 @@ function donationSummary(cb) {
 function tweetSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
-    var tweets = data[keys[keys.length - 1]].t - data[keys[0]].t
-    tweets = format(tweets)
+    var tweets = 0;
+    keys.map(function(d) { tweets += data[d].t; });
+    tweets = format(tweets);
     var strings = [
       tweets + " tweets were sent about #SGDQ2016🎮 in the last hour!",
       "Lots of tweets flying around about #SGDQ2016🎮! " + tweets + " were sent in the last hour."
@@ -122,7 +123,14 @@ function onSchedule() {
 }
 onSchedule();
 
-console.log("*[Tweet Sender] Started.")
-schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
-  onSchedule();
-});
+// if (require.main === module) {
+//   timeFuncMap.forEach(function(d){
+//     d.func(console.log)
+//   }); 
+// }
+// else{
+  console.log("*[Tweet Sender] Started.")
+  schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+    onSchedule();
+  });
+// }

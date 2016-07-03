@@ -102,4 +102,5 @@ schedule.scheduleJob({minute: 0}, function() {
 // Reset rate limiting
 schedule.scheduleJob({minute: [0, 20, 40]}, function() {
   rateLimit = false;
+  console.log('[Tweet Sender] Reset internal rate limit')
 });
