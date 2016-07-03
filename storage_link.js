@@ -46,7 +46,7 @@ function doUpload(data) {
             }
             // Only keep every 10th backup to prevent insanity
             if((new Date(timestamp)).getMinutes() % 10 != 0) {
-              file.delete(function(err) { console.log(err); });
+              file.delete(function(err) { if(err) console.log(err); });
             }
           });
         }
@@ -55,8 +55,7 @@ function doUpload(data) {
   });
 }
 
-console.log("*[Storage Link] Started.")
-schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+function onSchedule() {
   var timestamp = dateutils.getTimeStamp();
   console.log((new Date(timestamp)).toString() + " - Creating backup");
   ref.once("value", function(data){
@@ -65,4 +64,13 @@ schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
     doUpload(data);
     health_check.check(data);
   });
+}
+
+console.log("*[Storage Link] Started.")
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+  onSchedule();
 });
+
+if (require.main === module) {
+  onSchedule();
+}

@@ -25,7 +25,7 @@ while(start < end) {
     v = v + randomIntInc(-100, 100);
     payload[start.getTime()] = {
         m: i,
-        d: 2,
+        d: i / 10,
         v: v,
     }
     extrasPayload[start.getTime()] = {
