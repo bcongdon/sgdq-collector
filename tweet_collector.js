@@ -3,13 +3,31 @@ var schedule = require('node-schedule');
 var t_creds = require("./twitter_credentials.json");
 var firebase_utils = require('./utils/firebase_utils.js');
 var time_utils = require('./utils/time_utils.js');
+var sentiment = require('sentiment');
+var shuffle = require('shuffle-array');
 
 var client = new Twitter(t_creds);
 
-function likeTweet(tweet){
+function interactWith(tweet){
+  // Don't interact with negative tweets
+  if(sentiment(tweet.text) < 0) return;
+  var func = shuffle.pick([like, follow]);
+  func(tweet);
+}
+
+function like(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
     if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
+    else { console.log(err); }
+  });
+}
+
+function follow(tweet) {
+  var timestamp = time_utils.getTimeStamp();
+  client.post('friendships/create', {user_id: tweet.user.id}, (err, data, res)=>{
+    if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
+    else { console.log(err); }
   });
 }
 
@@ -24,7 +42,7 @@ function setupStream(){
   }
   stream = client.stream('statuses/filter', {track: 'sgdq, summergamesdonequick, sgdq2016, #sgdq2016'});
   stream.on('data', function(tweet) {
-    likeTweet(tweet);
+    interactWith(tweet);
     num_tweets += 1;
   });
    
@@ -71,7 +89,8 @@ schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
   collectTweets();
 });
 
-// Restart twitter stream every hour
+// Restart twitter stream & client every hour
 schedule.scheduleJob({minute: 0}, function() {
+  client = new Twitter(t_creds);
   setupStream();
 });
