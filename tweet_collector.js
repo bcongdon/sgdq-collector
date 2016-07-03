@@ -7,10 +7,12 @@ var sentiment = require('sentiment');
 var shuffle = require('shuffle-array');
 
 var client = new Twitter(t_creds);
+var rateLimit = false;
 
 function interactWith(tweet){
   // Don't interact with negative tweets
   if(sentiment(tweet.text) < 0) return;
+  if(rateLimit) return;
   var func = shuffle.pick([like, follow]);
   func(tweet);
 }
@@ -18,7 +20,8 @@ function interactWith(tweet){
 function like(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
-    // if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
+    if(err) rateLimit = true;
+    if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
     // else { console.log(err); }
   });
 }
@@ -26,7 +29,8 @@ function like(tweet) {
 function follow(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('friendships/create', {user_id: tweet.user.id}, (err, data, res)=>{
-    // if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
+    if(err) rateLimit = true;
+    if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
     // else { console.log(err); }
   });
 }
@@ -93,4 +97,9 @@ schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
 schedule.scheduleJob({minute: 0}, function() {
   client = new Twitter(t_creds);
   setupStream();
+});
+
+// Reset rate limiting
+schedule.scheduleJob({minute: [0, 20, 40]}, function() {
+  rateLimit = false;
 });
