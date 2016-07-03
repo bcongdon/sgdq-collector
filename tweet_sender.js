@@ -3,6 +3,7 @@ var t_creds = require("./twitter_credentials.json");
 var client = new Twitter(t_creds);
 var firebase_utils = require('./utils/firebase_utils.js');
 var merge = require('merge');
+var shuffle = require('shuffle-array')
 
 var db = firebase_utils.database;
 
@@ -11,15 +12,25 @@ function viewerSummary(cb) {
     var keys = Object.keys(data).sort().slice(-60)
     var max = undefined;
     for(var i in keys) if(!max || data[keys[i]].v > max.v) max = data[keys[i]];
-    cb("Highest number of viewers in last hour: " + max.v + " #SGDQ2016🎮");
+    var strings = [
+      "Highest number of viewers in last hour: " + max.v + " #SGDQ2016🎮",
+      "Lots of people tuning in to #SGDQ2016🎮. " + max.v + " in the past hour, to be precise!",
+      "#SGDQ2016🎮 has a crew of " + max.v + " viewers watching some awesome runners destroy our favorite games."
+    ];
+    cb(shuffle.pick(strings));
   });
 }
 
 function donatorSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
-    var donators = data[keys[keys.length - 1]].d - data[keys[0]].d
-    cb("There were " + parseInt(donators) + " donations in the last hour! #SGDQ2016🎮");
+    var donators = data[keys[keys.length - 1]].d - data[keys[0]].d;
+    var strings = [
+      "There were " + parseInt(donators) + " donations in the last hour! #SGDQ2016🎮",
+      "Lots of charitable gamers: " + parseInt(donators) + " donations made in the last hour! #SGDQ2016🎮",
+      parseInt(donators) + " donations made in the last hour. Destroying games and raising money for #charity. #SGDQ2016🎮"
+    ]
+    cb(shuffle.pick(strings));
   });
 }
 
@@ -27,7 +38,12 @@ function donationSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var donations = data[keys[keys.length - 1]].m - data[keys[0]].m
-    cb("$" + parseInt(donations) + " was donated to @MSF_USA in the last hour! #SGDQ2016🎮");
+    var strings = [
+      "$" + parseInt(donations) + " was donated to @MSF_USA in the last hour! #SGDQ2016🎮",
+      "Lots of charitable gamers: $" + parseInt(donations) + " donated in the last hour! #SGDQ2016🎮",
+      "Keep donating! $" + parseInt(donations) + " donated to #charity the last hour! #SGDQ2016🎮",
+    ];
+    cb(shuffle.pick(strings));
   });
 }
 
@@ -35,7 +51,11 @@ function tweetSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var tweets = data[keys[keys.length - 1]].t - data[keys[0]].t
-    cb(parseInt(tweets) + " tweets were sent about #SGDQ2016🎮 in the last hour!");
+    var strings = [
+      tweets + " tweets were sent about #SGDQ2016🎮 in the last hour!",
+      "Lots of tweets flying around about #SGDQ2016🎮! " + tweets + " were sent in the last hour."
+    ]
+    cb(shuffle.pick(strings));
   });
 }
 
@@ -45,7 +65,12 @@ function chatSummary(cb) {
     var chats = 0,
         emotes = 0;
     keys.map(function(d) { chats += data[d].c; emotes += data[d].e; });
-    cb(chats + " chats and " + emotes + " emotes were sent in the #SGDQ2016🎮 @twitch chat in the last hour!");
+    var strings = [
+      chats + " chats and " + emotes + " emotes were sent in the #SGDQ2016🎮 @twitch chat in the last hour!",
+      "The #SGDQ2016🎮 @twitch chat sent " + emotes + " emotes in the past hour. Kappa.",
+      "The #SGDQ2016🎮 @twitch chat sent " + chats + " chats in the past hour. Great games to talk about!"
+    ]
+    cb(shuffle.pick(strings));
   });
 }
 
@@ -56,8 +81,9 @@ function getData(cb){
   });
 }
 
-viewerSummary(console.log);
-donatorSummary(console.log);
-donationSummary(console.log);
-tweetSummary(console.log);
-chatSummary(console.log);
+[viewerSummary, donatorSummary, donationSummary, tweetSummary, chatSummary].map(function(d) { d(console.log)});
+// viewerSummary(console.log);
+// donatorSummary(console.log);
+// donationSummary(console.log);
+// tweetSummary(console.log);
+// chatSummary(console.log);
