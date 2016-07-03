@@ -18,16 +18,16 @@ function interactWith(tweet){
 function like(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
-    if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
-    else { console.log(err); }
+    // if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
+    // else { console.log(err); }
   });
 }
 
 function follow(tweet) {
   var timestamp = time_utils.getTimeStamp();
   client.post('friendships/create', {user_id: tweet.user.id}, (err, data, res)=>{
-    if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
-    else { console.log(err); }
+    // if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
+    // else { console.log(err); }
   });
 }
 
