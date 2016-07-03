@@ -7,12 +7,17 @@ var request = require('request');
 var channel = require('./utils/channel.js');
 var includes = require('array-includes');
 
-// Initialize IRC client
-var client = irc.client({
-  channels: [channel.channel()],
-  reconnect: true
-});
-client.connect();
+var client;
+
+function setupClient() {
+  // Initialize IRC client
+  client = irc.client({
+    channels: [channel.channel()],
+    reconnect: true
+  });
+  client.connect();
+}
+setupClient();
 
 var emoteList = [];
 request('https://api.twitch.tv/kraken/chat/emoticon_images', (err, res, body)=>{
@@ -57,6 +62,9 @@ function chatCollect() {
   console.log((new Date(timestamp)).toString() + " - Chats: " + chats.length + " (" + totalChats + ") Emotes: " + numEmotes
     + " (" + totalEmotes + ")");
 
+  // Reinitialize client if we got no data, just in case
+  if(chats.length == 0 || numEmotes == 0) setupClient();
+
   // Set extras data
   extras.child(timestamp).child('e').set(numEmotes);
   extras.child(timestamp).child('c').set(chats.length);
@@ -67,11 +75,11 @@ function chatCollect() {
   chats = [];
   numEmotes = 0;
 
-  var chan = channel.channel()
-  if(!includes(client.getChannels(), chan)) {
-    client.part(client.getChannels()[0])
-    client.join(chan);
-  }
+  // var chan = channel.channel()
+  // if(!includes(client.getChannels(), chan)) {
+  //   client.part(client.getChannels()[0])
+  //   client.join(chan);
+  // }
 }
 
 console.log("*Chat collector started.")

@@ -105,7 +105,7 @@ function sendTweet(status) {
 }
 
 var timeFuncMap = [ 
-  { func: viewerSummary, minute: 5, hour: 1 },
+  { func: viewerSummary, minute: 0, hour: 1 },
   { func: donatorSummary, minute: 12, hour: 2 },
   { func: donationSummary, minute: 24, hour: 1 },
   { func: tweetSummary, minute: 36, hour: 1 },

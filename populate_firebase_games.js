@@ -13,6 +13,7 @@ var games_ref = db.ref("/games");
 
 var games = require('./data_file.json')
 var payload = {}
+total_payload = {}
 
 games.forEach(function(item){
     payload = {
@@ -23,8 +24,10 @@ games.forEach(function(item){
         title: item.title
     }
     // console.log(payload.start_time)
-    console.log("Sending '" + item.title + "'");
-    games_ref.child(payload.start_time).set(payload, function(err){
-        if(err) console.log(err);
-    });
+    total_payload[payload.start_time] = payload
+});
+
+games_ref.set(total_payload, function(err){
+    if(err) console.log(err);
+    else console.log("Set successfully")
 });

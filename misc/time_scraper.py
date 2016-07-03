@@ -27,5 +27,5 @@ for row in first_rows:
 blacklist = ['Pre-Show', 'Setup Block', 'TAS', 'Finale']
 games = [x for x in games if not any(x['title'].startswith(b) for b in blacklist)]
 
-with open('data_file.json', 'w+') as f:
+with open('../data_file.json', 'w+') as f:
     f.write(json.dumps(games))
