@@ -7,15 +7,21 @@ var merge = require('merge');
 var shuffle = require('shuffle-array');
 var schedule = require('node-schedule');
 var time_utils = require('./utils/time_utils.js');
+var numeral = require('numeral');
 
 var db = firebase_utils.database;
 var client = new Twitter(t_creds);
+
+function format(num){
+  return numeral(parseFloat(num)).format('0,0')
+}
 
 function viewerSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var max = undefined;
     for(var i in keys) if(!max || data[keys[i]].v > max.v) max = data[keys[i]];
+    max.v = format(max.v);
     var strings = [
       "Highest number of viewers in last hour: " + max.v + " #SGDQ2016🎮",
       "Lots of people tuning in to #SGDQ2016🎮. " + max.v + " in the past hour, to be precise!",
@@ -29,10 +35,11 @@ function donatorSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var donators = data[keys[keys.length - 1]].d - data[keys[0]].d;
+    donators = format(donators);
     var strings = [
-      "There were " + parseInt(donators) + " donations in the last hour! #SGDQ2016🎮",
-      "Lots of charitable gamers: " + parseInt(donators) + " donations made in the last hour! #SGDQ2016🎮",
-      parseInt(donators) + " donations made in the last hour. Destroying games and raising money for #charity. #SGDQ2016🎮"
+      "There were " + donators + " donations in the last hour! #SGDQ2016🎮",
+      "Lots of charitable gamers: " + donators + " donations made in the last hour! #SGDQ2016🎮",
+      donators + " donations made in the last hour. Destroying games and raising money for #charity. #SGDQ2016🎮"
     ]
     cb(shuffle.pick(strings));
   });
@@ -42,10 +49,11 @@ function donationSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var donations = data[keys[keys.length - 1]].m - data[keys[0]].m
+    donations = format(donations)
     var strings = [
-      "$" + parseInt(donations) + " was donated to @MSF_USA in the last hour! #SGDQ2016🎮",
-      "Lots of charitable gamers: $" + parseInt(donations) + " donated in the last hour! #SGDQ2016🎮",
-      "Keep donating! $" + parseInt(donations) + " donated to #charity the last hour! #SGDQ2016🎮",
+      "$" + donations + " was donated to @MSF_USA in the last hour! #SGDQ2016🎮",
+      "Lots of charitable gamers: $" + donations + " donated in the last hour! #SGDQ2016🎮",
+      "Keep donating! $" + donations + " donated to #charity the last hour! #SGDQ2016🎮",
     ];
     cb(shuffle.pick(strings));
   });
@@ -55,6 +63,7 @@ function tweetSummary(cb) {
   getData(function(data){
     var keys = Object.keys(data).sort().slice(-60)
     var tweets = data[keys[keys.length - 1]].t - data[keys[0]].t
+    tweets = format(tweets)
     var strings = [
       tweets + " tweets were sent about #SGDQ2016🎮 in the last hour!",
       "Lots of tweets flying around about #SGDQ2016🎮! " + tweets + " were sent in the last hour."
@@ -69,6 +78,8 @@ function chatSummary(cb) {
     var chats = 0,
         emotes = 0;
     keys.map(function(d) { chats += data[d].c; emotes += data[d].e; });
+    emotes = format(emotes);
+    chats = format(chats)
     var strings = [
       chats + " chats and " + emotes + " emotes were sent in the #SGDQ2016🎮 @twitch chat in the last hour!",
       "The #SGDQ2016🎮 @twitch chat sent " + emotes + " emotes in the past hour. Kappa.",
@@ -109,7 +120,6 @@ function onSchedule() {
     }
   });
 }
-
 onSchedule();
 
 console.log("*[Tweet Sender] Started.")
