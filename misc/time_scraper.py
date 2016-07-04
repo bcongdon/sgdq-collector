@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import json
+import sys
 
 html = requests.get("http://gamesdonequick.com/schedule").text
 soup = BeautifulSoup(html, 'html.parser')
@@ -27,5 +28,8 @@ for row in first_rows:
 blacklist = ['Pre-Show', 'Setup Block', 'TAS', 'Finale']
 games = [x for x in games if not any(x['title'].startswith(b) for b in blacklist)]
 
-with open('../data_file.json', 'w+') as f:
-    f.write(json.dumps(games))
+if len(sys.argv) == 1 or sys.argv[1] == 'verbose':
+    print json.dumps(games)
+else:
+    with open('../data_file.json', 'w+') as f:
+        f.write(json.dumps(games))
