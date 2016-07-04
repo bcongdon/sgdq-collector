@@ -7,29 +7,31 @@ var sentiment = require('sentiment');
 var shuffle = require('shuffle-array');
 
 var client = new Twitter(t_creds);
-var rateLimit = false;
+var likeLimit = false,
+    followLimit = false;
 
 function interactWith(tweet){
   // Don't interact with negative tweets
   if(sentiment(tweet.text) < 0) return;
-  if(rateLimit) return;
   var func = shuffle.pick([like, follow]);
   func(tweet);
 }
 
 function like(tweet) {
+  if(likeLimit) return;
   var timestamp = time_utils.getTimeStamp();
   client.post('favorites/create', {id: tweet.id_str}, (err, data, res)=>{
-    if(err) { rateLimit = true; console.log("[Tweet Sender] Imposing rate limit"); }
+    if(err) { likeLimit = true; console.log("[Tweet Sender] Imposing rate limit on likes"); }
     if(!err) console.log((new Date(timestamp)).toString() + " Liked tweet: " + tweet.id);
     // else { console.log(err); }
   });
 }
 
 function follow(tweet) {
+  if(followLimit) return;
   var timestamp = time_utils.getTimeStamp();
   client.post('friendships/create', {user_id: tweet.user.id}, (err, data, res)=>{
-    if(err) { rateLimit = true; console.log("[Tweet Sender] Imposing rate limit"); }
+    if(err) { followLimit = true; console.log("[Tweet Sender] Imposing rate limit on follows"); }
     if(!err) console.log((new Date(timestamp)).toString() + " Followed user: " + tweet.user.id);
     // else { console.log(err); }
   });
@@ -101,6 +103,7 @@ schedule.scheduleJob({minute: 0}, function() {
 
 // Reset rate limiting
 schedule.scheduleJob({minute: [0, 20, 40]}, function() {
-  rateLimit = false;
+  likeLimit = false;
+  followLimit = false;
   console.log('[Tweet Sender] Reset internal rate limit')
 });
