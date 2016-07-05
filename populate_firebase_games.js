@@ -33,7 +33,6 @@ function sendGames(games) {
   games_ref.set(total_payload, function(err){
     if(err) console.log(err);
     else console.log("[Games Scraper] Set successfully");
-    process.exit();
   });
 }
 
