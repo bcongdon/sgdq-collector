@@ -1,12 +1,7 @@
 // Pushes contents of data_file.json up to Firebase
 // Purpose of this is to have scraped schedule available in the data
 var PythonShell = require('python-shell');
-var pyshell = new PythonShell('misc/time_scraper.py');
-
-pyshell.on('message', function(d){
-  sendGames(JSON.parse(d));
-  console.log('Received games.')
-})
+var schedule = require('node-schedule');
 
 var firebase = require('firebase');
 firebase.initializeApp({
@@ -37,7 +32,24 @@ function sendGames(games) {
   console.log("Sending " + Object.keys(total_payload).length + " games.")
   games_ref.set(total_payload, function(err){
     if(err) console.log(err);
-    else console.log("Set successfully");
+    else console.log("[Games Scraper] Set successfully");
     process.exit();
   });
 }
+
+function onSchedule() {
+  console.log("[Games Scraper] Pushing games list")
+  var pyshell = new PythonShell('misc/time_scraper.py');
+
+  pyshell.on('message', function(d){
+    sendGames(JSON.parse(d));
+    console.log('[Games Scraper] Received games.')
+  });
+}
+
+onSchedule();
+
+// Push games schedule every hour
+schedule.scheduleJob({minute: 0}, function() {
+  onSchedule();
+});
