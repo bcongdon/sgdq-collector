@@ -5,6 +5,7 @@ var pyshell = new PythonShell('misc/time_scraper.py');
 
 pyshell.on('message', function(d){
   sendGames(JSON.parse(d));
+  console.log('Received games.')
 })
 
 var firebase = require('firebase');

@@ -25,7 +25,8 @@ function viewerSummary(cb) {
     var strings = [
       "Highest number of viewers in last hour: " + max.v + " #SGDQ2016🎮",
       "Lots of people tuning in to #SGDQ2016🎮. " + max.v + " in the past hour, to be precise!",
-      "#SGDQ2016🎮 has a crew of " + max.v + " viewers watching some awesome runners destroy our favorite games."
+      "#SGDQ2016🎮 has a crew of " + max.v + " viewers watching some awesome runners destroy our favorite games.",
+      "Enjoying all the runs? Well, you have " + max.v " other #SGDQ2016🎮 enthusiests watching along!"
     ];
     cb(shuffle.pick(strings));
   });
@@ -39,7 +40,8 @@ function donatorSummary(cb) {
     var strings = [
       "There were " + donators + " donations in the last hour! #SGDQ2016🎮",
       "Lots of charitable gamers: " + donators + " donations made in the last hour! #SGDQ2016🎮",
-      donators + " donations made in the last hour. Destroying games and raising money for #charity. #SGDQ2016🎮"
+      donators + " donations made in the last hour. Destroying games and raising money for #charity. #SGDQ2016🎮",
+      "#SGDQ2016🎮: Come for the cause, stay for the games. The " + donators + " people that donated in the last hour agree."
     ]
     cb(shuffle.pick(strings));
   });
@@ -54,6 +56,7 @@ function donationSummary(cb) {
       "$" + donations + " was donated to @MSF_USA in the last hour! #SGDQ2016🎮",
       "Lots of charitable gamers: $" + donations + " donated in the last hour! #SGDQ2016🎮",
       "Keep donating! $" + donations + " donated to #charity the last hour! #SGDQ2016🎮",
+      "Whether or not you vote to save the animals, it's amazing that $" + donations + " was donated at #SGDQ2016🎮 in the last hour!"
     ];
     cb(shuffle.pick(strings));
   });
@@ -67,7 +70,8 @@ function tweetSummary(cb) {
     tweets = format(tweets);
     var strings = [
       tweets + " tweets were sent about #SGDQ2016🎮 in the last hour!",
-      "Lots of tweets flying around about #SGDQ2016🎮! " + tweets + " were sent in the last hour."
+      "Lots of tweets flying around about #SGDQ2016🎮! " + tweets + " were sent in the last hour.",
+      "#SGDQ2016🎮 got " + tweets + " mentions on twitter in the last hour. Guess we're pretty popular!"
     ]
     cb(shuffle.pick(strings));
   });
@@ -84,7 +88,8 @@ function chatSummary(cb) {
     var strings = [
       chats + " chats and " + emotes + " emotes were sent in the #SGDQ2016🎮 @twitch chat in the last hour!",
       "The #SGDQ2016🎮 @twitch chat sent " + emotes + " emotes in the past hour. Kappa.",
-      "The #SGDQ2016🎮 @twitch chat sent " + chats + " chats in the past hour. Great games to talk about!"
+      "The #SGDQ2016🎮 @twitch chat sent " + chats + " chats in the past hour. Great games to talk about!",
+      chats + " chats sent on @twitch in #SGDQ2016🎮 in the last hour. What a chatty bunch of speedrun enthusiests..."
     ]
     cb(shuffle.pick(strings));
   });
@@ -108,8 +113,8 @@ var timeFuncMap = [
   { func: viewerSummary, minute: 0, hour: 1 },
   { func: donatorSummary, minute: 12, hour: 2 },
   { func: donationSummary, minute: 24, hour: 1 },
-  { func: tweetSummary, minute: 36, hour: 1 },
-  { func: chatSummary, minute: 48, hour: 2 },
+  { func: tweetSummary, minute: 36, hour: 3 },
+  { func: chatSummary, minute: 48, hour: 1 },
 ]
 
 function onSchedule() {
