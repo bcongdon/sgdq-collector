@@ -26,7 +26,7 @@ function viewerSummary(cb) {
       "Highest number of viewers in last hour: " + max.v + " #SGDQ2016🎮",
       "Lots of people tuning in to #SGDQ2016🎮. " + max.v + " in the past hour, to be precise!",
       "#SGDQ2016🎮 has a crew of " + max.v + " viewers watching some awesome runners destroy our favorite games.",
-      "Enjoying all the runs? Well, you have " + max.v " other #SGDQ2016🎮 enthusiests watching along!"
+      "Enjoying all the runs? Well, you have " + max.v  + " other #SGDQ2016🎮 enthusiests watching along!"
     ];
     cb(shuffle.pick(strings));
   });
