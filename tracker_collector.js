@@ -1,5 +1,7 @@
 "use strict";
 var tracker = require("gdq_tracker_scraper");
+var schedule = require('node-schedule');
+
 var gcloud = require('gcloud')({
   projectId: 'sgdq-backend',
   keyFilename: './credentials.json'
@@ -10,6 +12,7 @@ var SUPER_METROID_BID_ID = 4792;
 function getChoiceSeries(bid) {
   return new Promise(function(resolve, reject) {
       tracker.getBidDetail(bid).then(function(res){
+      console.log("[Tracker Collector] Got first page")
       var promises = []
       res.data.forEach(function(d){
         promises.push(tracker.getBidDetail(d.link.split('/').pop()));
@@ -22,6 +25,7 @@ function getChoiceSeries(bid) {
 }
 
 function processChoiceSeries(data) {
+  console.log('[Tracker Collector] Parsing choice series')
   var xArrs = data.map(function(d){return d.data.map(function(e){return e.date})})
   var end = xArrs.reduce(function(prev, curr) { return curr[0] < prev ? curr[0] : prev}, Infinity);
   var start   = xArrs.reduce(function(prev, curr) { return curr[curr.length - 1] > prev ? curr[curr.length - 1] : prev }, 0)
@@ -47,7 +51,6 @@ function processChoiceSeries(data) {
   aggregatedValues.forEach(function(series, idx){
     series.unshift(data[idx].bid)
   })
-  console.log(aggregatedValues)
   var payload = {
     x: trueX,
     ys: aggregatedValues
@@ -56,15 +59,22 @@ function processChoiceSeries(data) {
 }
 
 var bucket = gcloud.storage().bucket('sgdq-backend.appspot.com');
+function onSchedule() {
+  getChoiceSeries(SUPER_METROID_BID_ID).then(function(data){
+    console.log('[Tracker Collector] Got data')
+    var series = processChoiceSeries(data)
+    var file = bucket.file('killVsSave.json');
+    file.save(JSON.stringify(series), function(err){
+      if(err) console.log(err)
+      else {
+        console.log('[Tracker Collector] Upload successful')
+        file.makePublic();
+      }
+    })
+  });
+}
 
-getChoiceSeries(SUPER_METROID_BID_ID).then(function(data){
-  var series = processChoiceSeries(data)
-  var file = bucket.file('killVsSave.json');
-  file.save(JSON.stringify(series), function(err){
-    if(err) console.log(err)
-    else {
-      console.log('Upload successful')
-      file.makePublic();
-    }
-  })
+console.log("[Tracker Collector] started.")
+schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+  onSchedule();
 });

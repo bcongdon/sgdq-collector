@@ -25,17 +25,24 @@ var games_push = new (forever.Monitor)('populate_firebase_games.js',{
   'errFile': './populate_firebase-games.err'
 });
 
+var tracker_collector = new (forever.Monitor)('tracker_collector.js',{
+  'outFile': './tracker_collector.log',
+  'errFile': './tracker_collector.err'
+});
+
 sgdq_collector.start();
 chat_collector.start();
 tweet_collector.start();
 tweet_sender.start();
 storage_link.start();
 games_push.start();
+tracker_collector.start();
 
 forever.startServer(sgdq_collector, 
   chat_collector,
   tweet_collector,
   tweet_sender,
   storage_link,
-  games_push
+  games_push,
+  tracker_collector
 );
