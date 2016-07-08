@@ -75,6 +75,7 @@ function onSchedule() {
 }
 
 console.log("[Tracker Collector] started.")
-schedule.scheduleJob({second: (new Date()).getSeconds()}, function(){
+// Run every 10 minutes
+schedule.scheduleJob({minute: [0, 10, 20, 30, 40, 50]}, function(){
   onSchedule();
 });
