@@ -25,7 +25,7 @@ for row in first_rows:
         'start_time': start_time,
     }
     games.append(game)
-blacklist = ['Pre-Show', 'Setup Block', 'TAS', 'Finale']
+blacklist = ['Pre-Show', 'Setup Block', 'Finale']
 games = [x for x in games if not any(x['title'].startswith(b) for b in blacklist)]
 
 if len(sys.argv) == 1 or sys.argv[1] == 'verbose':
